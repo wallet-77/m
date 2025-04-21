@@ -5,7 +5,7 @@ int primAlgorithm(int costMatrix[10][10], int numVertices, int startVertex) {
     int visited[10], i, j, totalCost = 0;
     int parentVertex[10], minDistance[10], minValue, currentVertex;
 
-    // Initialize min distances and parent
+  
     for (i = 1; i <= numVertices; i++) {
         minDistance[i] = costMatrix[startVertex][i];
         parentVertex[i] = startVertex;
@@ -17,7 +17,7 @@ int primAlgorithm(int costMatrix[10][10], int numVertices, int startVertex) {
         minValue = INFINITY;
         currentVertex = -1;
 
-        // Find the unvisited vertex with the smallest edge weight
+      
         for (j = 1; j <= numVertices; j++) {
             if (!visited[j] && minDistance[j] < minValue) {
                 minValue = minDistance[j];
@@ -25,13 +25,13 @@ int primAlgorithm(int costMatrix[10][10], int numVertices, int startVertex) {
             }
         }
 
-        if (currentVertex == -1) break; // In case graph is disconnected
+        if (currentVertex == -1) break;
 
         visited[currentVertex] = 1;
         totalCost += minDistance[currentVertex];
         printf("\n%d -> %d totalCost=%d", parentVertex[currentVertex], currentVertex, totalCost);
 
-        // Update minDistance and parentVertex
+        
         for (j = 1; j <= numVertices; j++) {
             if (!visited[j] && costMatrix[currentVertex][j] < minDistance[j]) {
                 minDistance[j] = costMatrix[currentVertex][j];
