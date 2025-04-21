@@ -23,7 +23,7 @@ int merge(int a[], int low, int mid, int high) {
         b[k++] = a[j++];
     }
     for (int z = low; z < k; z++) {
-        a[z] = b[z]; // Copy sorted elements back to 'a'
+        a[z] = b[z]; 
     }
     return 0;
 }
