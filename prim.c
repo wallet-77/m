@@ -1,64 +1,89 @@
 #include <stdio.h>
-#define INFINITY 999
+#define MAX 100
 
-int primAlgorithm(int costMatrix[10][10], int numVertices, int startVertex) {
-    int visited[10], i, j, totalCost = 0;
-    int parentVertex[10], minDistance[10], minValue, currentVertex;
+int graph[MAX][MAX];
 
-  
-    for (i = 1; i <= numVertices; i++) {
-        minDistance[i] = costMatrix[startVertex][i];
-        parentVertex[i] = startVertex;
-        visited[i] = 0;
-    }
-    visited[startVertex] = 1;
-
-    for (i = 1; i < numVertices; i++) {
-        minValue = INFINITY;
-        currentVertex = -1;
-
-      
-        for (j = 1; j <= numVertices; j++) {
-            if (!visited[j] && minDistance[j] < minValue) {
-                minValue = minDistance[j];
-                currentVertex = j;
-            }
-        }
-
-        if (currentVertex == -1) break;
-
-        visited[currentVertex] = 1;
-        totalCost += minDistance[currentVertex];
-        printf("\n%d -> %d totalCost=%d", parentVertex[currentVertex], currentVertex, totalCost);
-
-        
-        for (j = 1; j <= numVertices; j++) {
-            if (!visited[j] && costMatrix[currentVertex][j] < minDistance[j]) {
-                minDistance[j] = costMatrix[currentVertex][j];
-                parentVertex[j] = currentVertex;
-            }
+void initMat(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            graph[i][j] = 0;
         }
     }
-
-    return totalCost;
 }
 
-void main() {
-    int costMatrix[10][10], i, j, minimumCost, startVertex, numVertices;
+void addWeights(int u, int v, int w, int n) {
+    graph[u][v] = w;
+    graph[v][u] = w;
+}
 
-    printf("\nEnter number of vertices: ");
-    scanf("%d", &numVertices);
+void printmat(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d ", graph[i][j]);
+        }
+        printf("\n");
+    }
+}
 
-    printf("\nEnter the graph data:\n");
-    for (i = 1; i <= numVertices; i++) {
-        for (j = 1; j <= numVertices; j++) {
-            scanf("%d", &costMatrix[i][j]);
+void prims(int n, int source) {
+    int parent[MAX], key[MAX];
+    int visited[MAX] = {0};
+
+    for (int i = 0; i < n; i++) {
+        key[i] = MAX;
+    }
+    key[source] = 0;
+    parent[source] = -1;
+
+    for (int count = 0; count < n - 1; count++) {
+        int min = MAX, u;
+        for (int v = 0; v < n; v++) {
+            if (!visited[v] && key[v] < min) {
+                min = key[v];
+                u = v;
+            }
+        }
+        visited[u] = 1;
+
+        for (int v = 0; v < n; v++) {
+            if (graph[u][v] && !visited[v] && graph[u][v] < key[v]) {
+                parent[v] = u;
+                key[v] = graph[u][v];
+            }
         }
     }
 
-    printf("\nEnter the source node: ");
-    scanf("%d", &startVertex);
+    int totalCost = 0;
+    printf("Output:\n");
+    for (int i = 0; i < n; i++) {
+        if (parent[i] != -1) {
+            printf("\n %d to %d costs %d", parent[i], i, graph[i][parent[i]]);
+            totalCost += graph[i][parent[i]];
+        }
+    }
+    printf("\nTotal cost of MST: %d\n", totalCost);
+}
 
-    minimumCost = primAlgorithm(costMatrix, numVertices, startVertex);
-    printf("\nMinimum Spanning Tree Cost=%d\n", minimumCost);
+int main() {
+    int u, v, w, n, e, source;
+
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter the number of edges: ");
+    scanf("%d", &e);
+    initMat(n);
+
+    printf("Enter the weights as follows (u v w):\n");
+    for (int i = 0; i < e; i++) {
+        scanf("%d %d %d", &u, &v, &w);
+        addWeights(u, v, w, n);
+    }
+
+    printf("Enter the source node: ");
+    scanf("%d", &source);
+
+    prims(n, source);
+
+    return 0;
 }
